@@ -38,21 +38,21 @@ node(""){
     }
 
     try {
-      stage ("Publish Artifactory")
-      {
-          withCredentials([[$class: 'UsernamePasswordMultiBinding', 
-                            credentialsId: 'artifactoryCredentials',
-                            usernameVariable: 'ARTIFACTORY_USER', 
-                            passwordVariable: 'ARTIFACTORY_PASSWORD']])
-            {
-                    sh """
-                    pushd ${workspaceDir}/${appName}
-                    ./gradlew :${appName}-plugin:artifactoryPublish
-                    ./gradlew :${appName}-app:artifactoryPublish
-                    popd
-                    """
-              }
-      }
+    //   stage ("Publish Artifactory")
+    //   {
+    //       withCredentials([[$class: 'UsernamePasswordMultiBinding', 
+    //                         credentialsId: 'artifactoryCredentials',
+    //                         usernameVariable: 'ARTIFACTORY_USER', 
+    //                         passwordVariable: 'ARTIFACTORY_PASSWORD']])
+    //         {
+    //                 sh """
+    //                 pushd ${workspaceDir}/${appName}
+    //                 ./gradlew :${appName}-plugin:artifactoryPublish
+    //                 ./gradlew :${appName}-app:artifactoryPublish
+    //                 popd
+    //                 """
+    //           }
+    //   }
       stage ("Publish Docker App") 
       {      
         withCredentials([[$class: 'UsernamePasswordMultiBinding', 
@@ -74,22 +74,22 @@ node(""){
         currentBuild.result = "FAILED"
         notifyObj?.notifyFailed()
     }
-    try {
-        stage('SonarQube analysis') {
-            withSonarQubeEnv('sonar_cloud') {
-                // requires SonarQube Scanner for Gradle 2.1+
-                // It's important to add --info because of SONARJNKNS-281
-                sh """
-                  pushd ${workspaceDir}/${appName}/
-                  ./gradlew --info sonarqube -Dsonar.projectKey=${appName}
-                  popd
-                """
-            }
-        }
-    }
-    catch (e) {
-        echo e.toString()
-    }
+    // try {
+    //     stage('SonarQube analysis') {
+    //         withSonarQubeEnv('sonar_cloud') {
+    //             // requires SonarQube Scanner for Gradle 2.1+
+    //             // It's important to add --info because of SONARJNKNS-281
+    //             sh """
+    //               pushd ${workspaceDir}/${appName}/
+    //               ./gradlew --info sonarqube -Dsonar.projectKey=${appName}
+    //               popd
+    //             """
+    //         }
+    //     }
+    // }
+    // catch (e) {
+    //     echo e.toString()
+    // }
   stage("Clean Workspace"){
      step([$class: 'WsCleanup'])
   }
